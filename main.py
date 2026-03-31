@@ -2,6 +2,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from config import LLM_MODEL, LLM_BASE_URL
 from routers import chat, upload
+from fastapi.staticfiles import StaticFiles
 
 app = FastAPI(
     title="RAG Engine",
@@ -25,6 +26,7 @@ app.include_router(upload.router, prefix="/api/v1", tags=["Upload"])
 async def health():
     return {"status": "UP", "model": LLM_MODEL, "base_url": LLM_BASE_URL}
 
+app.mount("/", StaticFiles(directory="static", html=True), name="static")
 
 if __name__ == "__main__":
     import uvicorn

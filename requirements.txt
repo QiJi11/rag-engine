@@ -6,3 +6,5 @@ pydantic
 sse-starlette
 pypdf
 python-multipart
+chromadb
+sentence-transformers

@@ -6,3 +6,13 @@ __pycache__/
 .vscode/
 data/*
 !data/.gitkeep
+
+venv/
+__pycache__/
+.env
+data/chroma_db/
+*.pyc
+models/
+*.log
+install.log
+
