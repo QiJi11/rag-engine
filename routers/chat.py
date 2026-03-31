@@ -7,6 +7,26 @@ from services.llm import build_messages, chat, chat_stream
 from services.rag import retrieve
 from store.memory import get_history, save_round, clear
 
+
+def _build_rag_query(history: list[dict], query: str) -> str:
+    """
+    Query rewriting: prepend last user turn to improve retrieval on follow-up questions.
+
+    Interview point:
+      "Pronoun-heavy follow-ups like 'what about it?' fail in vector search.
+       Cheapest fix: concatenate last user turn to current query before embedding.
+       Full LLM rewrite is more accurate but doubles API calls — cost tradeoff."
+    """
+    if history:
+        last_user = next(
+            (m["content"] for m in reversed(history) if m["role"] == "user"),
+            ""
+        )
+        if last_user:
+            return f"{last_user} {query}"
+    return query
+
+
 router = APIRouter()
 
 
@@ -27,7 +47,8 @@ async def stream_endpoint(req: ChatRequest):
         raise HTTPException(500, "LLM_API_KEY not configured")
 
     history = get_history(req.session_id)
-    context = retrieve(req.query) if req.use_rag else ""
+    rag_query = _build_rag_query(history, req.query)
+    context = retrieve(rag_query) if req.use_rag else ""
     messages = build_messages(history, req.query, context)
 
     async def generate():
@@ -52,7 +73,8 @@ async def normal_endpoint(req: ChatRequest):
         raise HTTPException(500, "LLM_API_KEY not configured")
 
     history = get_history(req.session_id)
-    context = retrieve(req.query) if req.use_rag else ""
+    rag_query = _build_rag_query(history, req.query)
+    context = retrieve(rag_query) if req.use_rag else ""
     messages = build_messages(history, req.query, context)
     content = await chat(messages)
     save_round(req.session_id, req.query, content)
