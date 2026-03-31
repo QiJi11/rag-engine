@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from config import LLM_MODEL, LLM_BASE_URL
-from routers import chat
+from routers import chat, upload
 
 app = FastAPI(
     title="RAG Engine",
@@ -18,6 +18,7 @@ app.add_middleware(
 )
 
 app.include_router(chat.router, prefix="/api/v1", tags=["Chat"])
+app.include_router(upload.router, prefix="/api/v1", tags=["Upload"])
 
 
 @app.get("/health")

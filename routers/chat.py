@@ -4,6 +4,7 @@ from pydantic import BaseModel
 from sse_starlette.sse import EventSourceResponse
 from config import LLM_API_KEY
 from services.llm import build_messages, chat, chat_stream
+from services.rag import retrieve
 from store.memory import get_history, save_round, clear
 
 router = APIRouter()
@@ -12,6 +13,7 @@ router = APIRouter()
 class ChatRequest(BaseModel):
     query: str
     session_id: str = "default"
+    use_rag: bool = True
 
 
 @router.post("/chat/stream")
@@ -25,7 +27,8 @@ async def stream_endpoint(req: ChatRequest):
         raise HTTPException(500, "LLM_API_KEY not configured")
 
     history = get_history(req.session_id)
-    messages = build_messages(history, req.query)
+    context = retrieve(req.query) if req.use_rag else ""
+    messages = build_messages(history, req.query, context)
 
     async def generate():
         full = ""
@@ -49,7 +52,8 @@ async def normal_endpoint(req: ChatRequest):
         raise HTTPException(500, "LLM_API_KEY not configured")
 
     history = get_history(req.session_id)
-    messages = build_messages(history, req.query)
+    context = retrieve(req.query) if req.use_rag else ""
+    messages = build_messages(history, req.query, context)
     content = await chat(messages)
     save_round(req.session_id, req.query, content)
     return {"content": content, "session_id": req.session_id}
