@@ -1,14 +1,5 @@
 """
 RAG retrieval via ChromaDB and Reranking.
-
-Interview point:
-  "I fetch Top-20 candidate chunks from the vector database (fast but coarse),
-   then use a CrossEncoder to perform semantic Reranking (slow but highly accurate) 
-   to select the final Top-3 chunks. This dramatically improves retrieval quality 
-   while balancing compute cost.
-   
-   I also use lazy loading for the reranker model — it only loads on first use,
-   so the server starts instantly even without the model downloaded."
 """
 
 import os
@@ -18,7 +9,7 @@ COLLECTION_NAME = "knowledge_base"
 TOP_K = 3
 FETCH_K = 15  # For coarse retrieval
 
-# Lazy-loaded reranker (avoids blocking server startup if model not cached)
+# Lazy-loaded reranker to avoid blocking server startup.
 _reranker = None
 
 def get_reranker():

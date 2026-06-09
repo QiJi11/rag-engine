@@ -1,9 +1,5 @@
 """
 In-memory conversation store with sliding window.
-
-Interview point:
-  "I use a sliding window keeping the last 8 rounds to control token cost.
-   Production would swap this for Redis with TTL-based auto-cleanup."
 """
 
 MAX_ROUNDS = 8  # 8 user + 8 assistant = 16 messages max

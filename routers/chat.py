@@ -11,11 +11,6 @@ from store.memory import get_history, save_round, clear
 def _build_rag_query(history: list[dict], query: str) -> str:
     """
     Query rewriting: prepend last user turn to improve retrieval on follow-up questions.
-
-    Interview point:
-      "Pronoun-heavy follow-ups like 'what about it?' fail in vector search.
-       Cheapest fix: concatenate last user turn to current query before embedding.
-       Full LLM rewrite is more accurate but doubles API calls — cost tradeoff."
     """
     if history:
         last_user = next(
@@ -38,11 +33,7 @@ class ChatRequest(BaseModel):
 
 @router.post("/chat/stream")
 async def stream_endpoint(req: ChatRequest):
-    """
-    SSE streaming chat.
-    Interview point: "SSE is server-push only, lighter than WebSocket,
-    ideal for LLM token-by-token generation."
-    """
+    """Stream chat completion chunks through Server-Sent Events."""
     if not LLM_API_KEY:
         raise HTTPException(500, "LLM_API_KEY not configured")
 

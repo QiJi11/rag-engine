@@ -43,6 +43,35 @@ rag-engine/
 
 ## API 示例
 
+### 上传文档
+
+```http
+POST /api/v1/upload
+Content-Type: multipart/form-data
+```
+
+```powershell
+curl.exe -X POST "http://127.0.0.1:8000/api/v1/upload" `
+  -F "file=@docs/sample.txt;type=text/plain"
+```
+
+### 非流式问答
+
+```http
+POST /api/v1/chat
+Content-Type: application/json
+```
+
+```json
+{
+  "query": "向量数据库检索怎么优化？",
+  "session_id": "demo-session",
+  "use_rag": true
+}
+```
+
+### SSE 流式问答
+
 ```http
 POST /api/v1/chat/stream
 Content-Type: application/json
@@ -61,8 +90,12 @@ Content-Type: application/json
 ```powershell
 python -m venv .venv
 .venv\Scripts\python.exe -m pip install -r requirements.txt
+.venv\Scripts\python.exe -m pip install -r requirements-dev.txt
+.venv\Scripts\python.exe -m pytest -q
 .venv\Scripts\python.exe -m uvicorn main:app --host 0.0.0.0 --port 8000 --reload
 ```
+
+首次运行向量检索或 rerank 时，SentenceTransformers / CrossEncoder 可能需要下载模型。网络不可用时，可以先运行测试；测试通过 mock 避免真实模型下载。
 
 ## 环境变量
 

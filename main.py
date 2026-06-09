@@ -6,7 +6,7 @@ from fastapi.staticfiles import StaticFiles
 
 app = FastAPI(
     title="RAG Engine",
-    description="Enterprise knowledge QA system with RAG + streaming",
+    description="Knowledge QA demo with RAG and streaming responses",
     version="0.1.0",
 )
 

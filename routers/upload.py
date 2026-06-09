@@ -1,10 +1,5 @@
 """
 File upload and document ingestion router.
-
-Interview point:
-  "Multi-format support (TXT, PDF) with proper error handling.
-   Once documents are chunked and indexed, the RAG retriever can serve
-   context for any query without re-processing."
 """
 
 from fastapi import APIRouter, UploadFile, File, HTTPException

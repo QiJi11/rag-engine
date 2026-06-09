@@ -1,10 +1,5 @@
 """
 LLM client wrapper — OpenAI-compatible, works with GPT / DeepSeek / Qwen.
-
-Interview point:
-  "I abstracted the LLM layer so switching providers is a one-line .env change.
-   We default to a cost-effective model and only escalate to larger models
-   for complex reasoning tasks."
 """
 
 from openai import AsyncOpenAI
@@ -13,7 +8,7 @@ from config import LLM_API_KEY, LLM_BASE_URL, LLM_MODEL
 client = AsyncOpenAI(api_key=LLM_API_KEY, base_url=LLM_BASE_URL)
 
 SYSTEM_PROMPT = (
-    "你是一个企业级AI知识助手。"
+    "你是一个知识库问答助手。"
     "请基于提供的上下文信息回答用户问题。"
     "如果上下文中没有相关信息，请如实告知，不要编造答案。"
     "回答简洁专业。"

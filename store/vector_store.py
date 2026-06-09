@@ -1,13 +1,5 @@
 """
 ChromaDB vector store implementation.
-
-Interview point:
-  "I upgraded the MVP to use ChromaDB with actual embeddings. 
-   It persists to disk and uses SentenceTransformers to map text into 
-   dense vectors, allowing semantic search instead of just keyword matching.
-   
-   I use lazy loading — the embedding model only loads when first needed,
-   so the server starts instantly and gracefully handles offline environments."
 """
 
 import os

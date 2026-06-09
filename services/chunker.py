@@ -1,10 +1,5 @@
 """
 Document text chunking with sliding window.
-
-Interview point:
-  "I chunk documents to fit within token limits (512 chars ≈ ~250 tokens).
-   Overlap of 50 chars preserves context at chunk boundaries,
-   which is critical for retrieval since the relevant info might straddle chunks."
 """
 
 import re
